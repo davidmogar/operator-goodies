@@ -32,19 +32,36 @@ func TestUtilTest(t *testing.T) {
 var _ = Describe("Test utilities", func() {
 	Context("When GetRelativeDependencyPath is called", func() {
 		It("returns the module path of a given dependency", func() {
-			moduleRelativePath, err := GetRelativeDependencyPath("ginkgo")
+			moduleRelativePath := GetRelativeDependencyPath("ginkgo")
+			Expect(moduleRelativePath).To(ContainSubstring("ginkgo@v"))
+		})
+
+		It("returns the module path of a given indirect dependency", func() {
+			moduleRelativePath := GetRelativeDependencyPath("yaml.v3")
+			Expect(moduleRelativePath).To(ContainSubstring("yaml.v3@v"))
+		})
+
+		It("returns an empty string when the given dependency is not found", func() {
+			moduleRelativePath := GetRelativeDependencyPath("nonexistent")
+			Expect(moduleRelativePath).To(BeEmpty())
+		})
+	})
+
+	Context("When GetRelativeDependencyPathWithError is called", func() {
+		It("returns the module path of a given dependency", func() {
+			moduleRelativePath, err := GetRelativeDependencyPathWithError("ginkgo")
 			Expect(err).NotTo(HaveOccurred())
 			Expect(moduleRelativePath).To(ContainSubstring("ginkgo@v"))
 		})
 
 		It("returns the module path of a given indirect dependency", func() {
-			moduleRelativePath, err := GetRelativeDependencyPath("yaml.v3")
+			moduleRelativePath, err := GetRelativeDependencyPathWithError("yaml.v3")
 			Expect(err).NotTo(HaveOccurred())
 			Expect(moduleRelativePath).To(ContainSubstring("yaml.v3@v"))
 		})
 
 		It("returns an empty string when the given dependency is not found", func() {
-			moduleRelativePath, err := GetRelativeDependencyPath("nonexistent")
+			moduleRelativePath, err := GetRelativeDependencyPathWithError("nonexistent")
 			Expect(err).To(HaveOccurred())
 			Expect(moduleRelativePath).To(BeEmpty())
 		})

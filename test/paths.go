@@ -27,8 +27,16 @@ import (
 )
 
 // GetRelativeDependencyPath returns the relative system path for a given module. If the dependency is not
+// found within the go.mod file and empty string is returned.
+func GetRelativeDependencyPath(dependency string) string {
+	path, _ := GetRelativeDependencyPathWithError(dependency)
+
+	return path
+}
+
+// GetRelativeDependencyPathWithError returns the relative system path for a given module. If the dependency is not
 // found within the go.mod file or the file doesn't exist, an error will be returned.
-func GetRelativeDependencyPath(dependency string) (string, error) {
+func GetRelativeDependencyPathWithError(dependency string) (string, error) {
 	currentWorkDir, _ := os.Getwd()
 
 	goModFilePath, err := FindGoModPath(currentWorkDir)
