@@ -2,7 +2,17 @@
 
 This repository contains code that can be used in other operators to make some operations easier.
 
-## Testing
+## Goodies
+
+### Predicates
+
+The following predicates are available:
+
+| Name                         | Description                                                                      |
+|------------------------------|----------------------------------------------------------------------------------|
+| GenerationUnchangedPredicate | Skip update events that have a change in the object's metadata.generation field. |
+
+### Testing
 
 When testing an operator with Ginkgo and EnvTest, CRDs yamls have to be specified in the Environment declaration.
 For external CRDs, those yamls can be extracted from the go directory once all go.mod dependencies have been fetched.
