@@ -1,4 +1,4 @@
-module github.com/davidmogar/operator-goodies
+module github.com/redhat-appstudio/operator-goodies
 
 go 1.19
 
