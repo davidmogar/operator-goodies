@@ -21,8 +21,8 @@ return ctrl.NewControllerManagedBy(manager).
 
 ### Defining reconcile operations
 
-By using the `results.OperationResult` struct it's possible to define reconcile operations that would use the
-following structure:
+By using the `operations.ReconcileOperation` type and the `results.OperationResult` struct it's possible to define
+reconcile operations that would use the following structure:
 ```go
 func (a *Adapter) EnsureAnActionIsTaken() (results.OperationResult, error) {
     return results.ContinueProcessing()

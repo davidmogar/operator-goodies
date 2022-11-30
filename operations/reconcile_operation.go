@@ -14,7 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package results
+package operations
+
+import "github.com/redhat-appstudio/operator-goodies/results"
 
 // ReconcileOperation defines the syntax of functions invoked by the ReconcileHandler
-type ReconcileOperation func() (OperationResult, error)
+type ReconcileOperation func() (results.OperationResult, error)
