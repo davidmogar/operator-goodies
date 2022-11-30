@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package results
+package reconciler
 
 import "time"
 
@@ -26,7 +26,7 @@ type OperationResult struct {
 }
 
 // ContinueProcessing returns an (OperationResult, error) tuple instructing the reconcile loop to continue
-// processing operations.
+// processing reconciler.
 func ContinueProcessing() (OperationResult, error) {
 	return OperationResult{
 		RequeueDelay:   0,
@@ -61,7 +61,7 @@ func RequeueAfter(delay time.Duration, err error) (OperationResult, error) {
 }
 
 // RequeueOnErrorOrContinue returns an (OperationResult, error) tuple instructing the reconcile loop to requeue
-// the object in case of an error or to continue processing operations.
+// the object in case of an error or to continue processing reconciler.
 func RequeueOnErrorOrContinue(err error) (OperationResult, error) {
 	return OperationResult{
 		RequeueDelay:   0,
@@ -71,7 +71,7 @@ func RequeueOnErrorOrContinue(err error) (OperationResult, error) {
 }
 
 // RequeueOnErrorOrStop returns an (OperationResult, error) tuple instructing the reconcile loop to requeue
-// the object in case of an error or to stop processing operations.
+// the object in case of an error or to stop processing reconciler.
 func RequeueOnErrorOrStop(err error) (OperationResult, error) {
 	return OperationResult{
 		RequeueDelay:   0,
@@ -80,7 +80,7 @@ func RequeueOnErrorOrStop(err error) (OperationResult, error) {
 	}, err
 }
 
-// StopProcessing returns an (OperationResult, error) tuple instructing the reconcile loop to stop processing operations.
+// StopProcessing returns an (OperationResult, error) tuple instructing the reconcile loop to stop processing reconciler.
 func StopProcessing() (OperationResult, error) {
 	return OperationResult{
 		RequeueDelay:   0,

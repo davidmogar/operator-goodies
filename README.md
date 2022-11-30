@@ -19,15 +19,49 @@ return ctrl.NewControllerManagedBy(manager).
     Complete(reconciler)
 ```
 
-### Defining reconcile operations
+### Reconciling using a handler
 
-By using the `operations.ReconcileOperation` type and the `results.OperationResult` struct it's possible to define
-reconcile operations that would use the following structure:
+By using the `reconciler.ReconcileHandler` it's possible to define an adapter with reconcile operations that would
+reconcile a resource. The adapter would look like the following:
 ```go
+type Adapter struct {
+    resources *v1alpha1.Resource
+    logger  logr.Logger
+    client  client.Client
+    context context.Context
+}
+
 func (a *Adapter) EnsureAnActionIsTaken() (results.OperationResult, error) {
     return results.ContinueProcessing()
 }
 ```
+
+Now, to use it in the reconcile loop:
+```go
+func (r *Reconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
+	logger := r.Log.WithValues("Release", req.NamespacedName)
+
+	release := &v1alpha1.Release{}
+	err := r.Get(ctx, req.NamespacedName, release)
+	if err != nil {
+		if errors.IsNotFound(err) {
+			return ctrl.Result{}, nil
+		}
+
+		return ctrl.Result{}, err
+	}
+
+	adapter := NewAdapter(release, logger, r.Client, ctx)
+
+	operations := []operations.ReconcileOperation{
+		adapter.EnsureAnActionIsTaken,
+	}
+
+	return r.ReconcileHandler(operations)
+}
+```
+
+These operations will be executed in order and the result will be validated by the `reconciler.ReconcileHandler`.
 
 A good example of an operator defining a reconcile adapter (and handler) is the [release-service](https://github.com/redhat-appstudio/release-service/tree/main/controllers/release).
 
