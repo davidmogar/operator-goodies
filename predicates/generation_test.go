@@ -33,6 +33,69 @@ var _ = Describe("Predicates", Ordered, func() {
 			contextEvent := event.CreateEvent{
 				Object: &v1.Pod{},
 			}
+			Expect(instance.Create(contextEvent)).To(BeTrue())
+		})
+
+		It("should ignore deleting events", func() {
+			contextEvent := event.DeleteEvent{
+				Object: &v1.Pod{},
+			}
+			Expect(instance.Delete(contextEvent)).To(BeTrue())
+		})
+
+		It("should ignore generic events", func() {
+			contextEvent := event.GenericEvent{
+				Object: &v1.Pod{},
+			}
+			Expect(instance.Generic(contextEvent)).To(BeTrue())
+		})
+
+		It("should return true when an updated event is received with the object generation unchanged", func() {
+			contextEvent := event.UpdateEvent{
+				ObjectOld: &v1.Pod{
+					ObjectMeta: metav1.ObjectMeta{
+						Name:       "foo",
+						Namespace:  "bar",
+						Generation: 1,
+					}},
+				ObjectNew: &v1.Pod{
+					ObjectMeta: metav1.ObjectMeta{
+						Name:       "foo",
+						Namespace:  "bar",
+						Generation: 1,
+					},
+				},
+			}
+			Expect(instance.Update(contextEvent)).To(BeTrue())
+		})
+
+		It("should return false when an updated event is received with the object generation changed", func() {
+			contextEvent := event.UpdateEvent{
+				ObjectOld: &v1.Pod{
+					ObjectMeta: metav1.ObjectMeta{
+						Name:       "foo",
+						Namespace:  "bar",
+						Generation: 1,
+					}},
+				ObjectNew: &v1.Pod{
+					ObjectMeta: metav1.ObjectMeta{
+						Name:       "foo",
+						Namespace:  "bar",
+						Generation: 2,
+					},
+				},
+			}
+			Expect(instance.Update(contextEvent)).To(BeFalse())
+		})
+	})
+
+	Context("When using the GenerationUnchangedOnUpdatePredicate", func() {
+		instance := GenerationUnchangedOnUpdatePredicate{}
+
+		It("should ignore creating events", func() {
+			contextEvent := event.CreateEvent{
+				Object: &v1.Pod{},
+			}
 			Expect(instance.Create(contextEvent)).To(BeFalse())
 		})
 
