@@ -18,6 +18,19 @@ return ctrl.NewControllerManagedBy(manager).
     For(&v1.Pod{}, builder.WithPredicates(predicates.GenerationUnchangedPredicate{})).
     Complete(reconciler)
 ```
+
+### Defining reconcile operations
+
+By using the `results.OperationResult` struct it's possible to define reconcile operations that would use the
+following structure:
+```go
+func (a *Adapter) EnsureAnActionIsTaken() (results.OperationResult, error) {
+    return results.ContinueProcessing()
+}
+```
+
+A good example of an operator defining a reconcile adapter (and handler) is the [release-service](https://github.com/redhat-appstudio/release-service/tree/main/controllers/release).
+
 ### Referencing external CRDs when testing operators with EnvTest
 
 When testing an operator with Ginkgo and EnvTest, CRDs YAMLs have to be specified in the Environment declaration.
