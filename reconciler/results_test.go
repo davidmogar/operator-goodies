@@ -19,21 +19,11 @@ package reconciler
 import (
 	"errors"
 	"reflect"
-	"testing"
 	"time"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
-
-func TestOperationResult(t *testing.T) {
-	RegisterFailHandler(Fail)
-	RunSpecs(t, "Operation Results Test Suite")
-}
-
-var _ = BeforeSuite(func() {
-	By("tearing down the test environment")
-})
 
 var _ = Describe("Operation Results", func() {
 

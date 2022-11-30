@@ -17,17 +17,10 @@ limitations under the License.
 package test
 
 import (
-	"os"
-	"testing"
-
-	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
+	"os"
 )
-
-func TestUtilTest(t *testing.T) {
-	RegisterFailHandler(Fail)
-	RunSpecs(t, "Test Utilities Suite")
-}
 
 var _ = Describe("Test utilities", func() {
 	Context("When GetRelativeDependencyPath is called", func() {
