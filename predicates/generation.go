@@ -43,9 +43,9 @@ func (GenerationUnchangedPredicate) Update(e event.UpdateEvent) bool {
 // GenerationUnchangedOnUpdatePredicate implements a default update predicate function on Generation unchanged.
 //
 // This predicate will skip any event except updates. In the case of update events that have a change in the
-// object's metadata.generation field. The metadata.generation field of an object is incremented by the API server when
-// writes are made to the spec field of an object. This allows a controller to ignore update events where the spec has
-// unchanged, and only the metadata and/or status fields are changed.
+// object's metadata.generation field, those events will be skipped as well. The metadata.generation field of an object
+// is incremented by the API server when writes are made to the spec field of an object. This allows a controller to
+// ignore update events where the spec has unchanged, and only the metadata and/or status fields are changed.
 type GenerationUnchangedOnUpdatePredicate struct {
 	predicate.Funcs
 }
