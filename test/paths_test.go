@@ -26,7 +26,7 @@ var _ = Describe("Test utilities", func() {
 	Context("When GetRelativeDependencyPath is called", func() {
 		It("returns the module path of a given dependency", func() {
 			moduleRelativePath := GetRelativeDependencyPath("ginkgo")
-			Expect(moduleRelativePath).To(ContainSubstring("ginkgo@v"))
+			Expect(moduleRelativePath).To(ContainSubstring("ginkgo/v2@v"))
 		})
 
 		It("returns the module path of a given indirect dependency", func() {
@@ -44,7 +44,7 @@ var _ = Describe("Test utilities", func() {
 		It("returns the module path of a given dependency", func() {
 			moduleRelativePath, err := GetRelativeDependencyPathWithError("ginkgo")
 			Expect(err).NotTo(HaveOccurred())
-			Expect(moduleRelativePath).To(ContainSubstring("ginkgo@v"))
+			Expect(moduleRelativePath).To(ContainSubstring("ginkgo/v2@v"))
 		})
 
 		It("returns the module path of a given indirect dependency", func() {
