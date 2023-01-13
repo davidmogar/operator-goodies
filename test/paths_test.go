@@ -82,4 +82,5 @@ var _ = Describe("Test utilities", func() {
 			Expect(err.Error()).To(Equal("go.mod file not found"))
 		})
 	})
+
 })

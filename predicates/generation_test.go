@@ -151,4 +151,5 @@ var _ = Describe("Predicates", Ordered, func() {
 			Expect(instance.Update(contextEvent)).To(BeFalse())
 		})
 	})
+
 })

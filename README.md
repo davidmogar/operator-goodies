@@ -8,10 +8,12 @@ This repository contains code that can be used in other operators to make some o
 
 The following predicates are available:
 
-| Name                                 | Description                                                                                                                                                      |
-|--------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| GenerationUnchangedPredicate         | Skip update events that have a change in the object's metadata.generation field.                                                                                 |
-| GenerationUnchangedOnUpdatePredicate | Skip any event except updates. In the case of update events that have a change in the object's metadata.generation field, those events will be skipped as well.  |
+| Name                                 | Description                                                                                                                                                     |
+|--------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| GenerationUnchangedPredicate         | Skip update events that have a change in the object's metadata.generation field.                                                                                |
+| GenerationUnchangedOnUpdatePredicate | Skip any event except updates. In the case of update events that have a change in the object's metadata.generation field, those events will be skipped as well. |
+| IgnoreAllPredicate                   | Skip any kind of event.                                                                                                                                         |                                                                                                                                        |
+| NewObjectsPredicate                  | Skip all events but creations.                                                                                                                                  |                                                                                                                                  
 
 This is an example of using the `GenerationUnchangedPredicate`:
 ```go
