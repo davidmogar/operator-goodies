@@ -123,3 +123,73 @@ func (m *MyCRD) MarkReleased() {
     conditions.SetCondition(&m.Status.Conditions, releasedType, metav1.ConditionTrue, succeededReason)	
 }
 ```
+
+### Testing Prometheus metrics
+
+Two functions are added to generate counter and histogram metrics readers, `NewCounterReader` and `NewHistogramReader`.
+These functions will use the options and labels of the declared metric and generate the data for a single observation.
+An example use case, as seen in the [release-service](https://github.com/redhat-appstudio/release-service/tree/main/metrics),
+would be the following:
+
+Metric declaration:
+```go
+var (
+    ReleaseDeploymentDurationSeconds = prometheus.NewHistogramVec(
+        releaseDeploymentDurationSecondsOpts,
+        releaseDeploymentDurationSecondsLabels,
+    )
+    releaseDeploymentDurationSecondsLabels = []string{
+        "environment",
+        "reason",
+        "target",
+    }
+    releaseDeploymentDurationSecondsOpts = prometheus.HistogramOpts{
+        Name:    "release_deployment_duration_seconds",
+        Help:    "How long in seconds a Release deployment takes to complete",
+        Buckets: []float64{60, 150, 300, 450, 600, 750, 900, 1050, 1200, 1800, 3600},
+    }
+)
+```
+Notice that the opts and labels are extracted into variables so they can be reused in the tests.
+
+Function to add a new observation: 
+```go
+func RegisterCompletedReleaseDeployment(startTime, completionTime *metav1.Time, environment, reason, target string) {
+	ReleaseDeploymentDurationSeconds.
+		With(prometheus.Labels{
+			"environment": environment,
+			"reason":      reason,
+			"target":      target,
+		}).
+		Observe(completionTime.Sub(startTime.Time).Seconds())
+}
+```
+
+Test:
+```go
+var _ = Describe("Release metrics", Ordered, func() {
+    var (
+        initializeMetrics func()
+    )
+
+    It("adds an observation to ReleaseDeploymentDurationSeconds", func() {
+        RegisterCompletedReleaseDeployment(startTime, completionTime,
+            releaseDeploymentDurationSecondsLabels[0],
+            releaseDeploymentDurationSecondsLabels[1],
+            releaseDeploymentDurationSecondsLabels[2],
+        )
+        Expect(testutil.CollectAndCompare(ReleaseDeploymentDurationSeconds,
+            newHistogramReader(
+                releaseDeploymentDurationSecondsOpts,
+                releaseDeploymentDurationSecondsLabels,
+                startTime, completionTime,
+            ))).To(Succeed())
+    })
+
+    initializeMetrics = func() {
+        ReleaseDeploymentDurationSeconds.Reset()
+    }
+})
+```
+Here the label values are the labels themselves. That's just a way to pass relevant content without hardcoding it or
+having to pass that info to the reader functions. Those functions will generate the reader using also the labels as values.
