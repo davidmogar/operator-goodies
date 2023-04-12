@@ -99,3 +99,27 @@ testEnv = &envtest.Environment{
     ErrorIfCRDPathMissing: true,
 }
 ```
+
+### Declaring and using conditions
+
+To declare conditions in the status of CRDs, two types are declared in the `conditions` package:
+
+* **ConditionType:** Represents a Kubernetes condition type.
+* **ConditionReason:** Represents the reason of a Kubernetes condition.
+
+On top of that, two functions are supplied to set a new condition:
+
+* `SetCondition`, which expects a reference to the `metav1.Condition` slice and the type, status and reason for the condition.
+* `SetConditionWithMessage`, which on top of the above, will expect a message for the new condition.
+
+An example use case would be the following:
+```go
+const (
+    releasedType    conditions.ConditionType   = "Released"
+    succeededReason conditions.ConditionReason = "Succeeded"
+)
+
+func (m *MyCRD) MarkReleased() {
+    conditions.SetCondition(&m.Status.Conditions, releasedType, metav1.ConditionTrue, succeededReason)	
+}
+```
